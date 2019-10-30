@@ -42,13 +42,13 @@ n_s = 64
 
 mw = ModelWrapper()
 
-model = mw.create_model(Tx,Ty,n_a,n_s,len(human_vocab),len(machine_vocab))
-opt = tf.keras.optimizers.Adam(lr=0.005,beta_1=0.9,beta_2=0.999,decay=0.01)
-model.compile(opt,loss='categorical_crossentropy',metrics=['accuracy'])
+#model = mw.create_model(Tx,Ty,n_a,n_s,len(human_vocab),len(machine_vocab))
+#opt = tf.keras.optimizers.Adam(lr=0.005,beta_1=0.9,beta_2=0.999,decay=0.01)
+#model.compile(opt,loss='categorical_crossentropy',metrics=['accuracy'])
 
-#model = load_model('datareadmodel.h5')
+model = load_model('datareadmodel.h5',custom_objects={'softmax':softmax})
 model.summary()
-model.load_weights('model.h5')
+#model.load_weights('model.h5')
 
 Yoh = model.predict([Xoh,s0,c0])
 Yoh = np.array(Yoh).swapaxes(0,1)

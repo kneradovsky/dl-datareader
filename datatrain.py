@@ -4,7 +4,8 @@ import json
 import numpy as np
 from tqdm import tqdm
 import tensorflow as tf
-
+import datetime
+from keras_tqdm import TQDMCallback
 
 
 
@@ -51,7 +52,9 @@ if weigthsfile != None :
     model.load_weights(weigthsfile)
 
 opt = tf.keras.optimizers.Adam(lr=0.005,beta_1=0.9,beta_2=0.999,decay=0.01)
-model.compile(opt,loss='categorical_crossentropy',metrics=['accuracy','recall','precision'])
+recall = tf.keras.metrics.Recall()
+precision = tf.keras.metrics.Precision()
+model.compile(opt,loss='categorical_crossentropy',metrics=['accuracy'])
 
 
 #initialize parameters
@@ -62,7 +65,10 @@ c0test = np.zeros((m_test,n_s))
 
 outputs = list(Yoh.swapaxes(0,1))
 
-model.fit([Xoh,s0,c0],outputs,epochs=10,batch_size=100,verbose=0,validation_data=[[Xoh_test,s0test,c0test],Yoh_test])
+#keras tqdm
+
+
+model.fit([Xoh,s0,c0],outputs,epochs=10,batch_size=100,verbose=0,validation_data=([Xoh_test,s0test,c0test],Yoh_test),callbacks=[TQDMCallback()])
 
 if weigthsfile == None : weigthsfile="dataweights.h5"
 

@@ -22,7 +22,8 @@ daydelta = timedelta(days=daylength)
 begindate = curdate - daydelta
 numsamples = 100000
 
-locales = ['ru_RU','es_ES','fr_FR','uk_UA','de_DE','fi_FI','sv_SE','be_BY'] #special digits locale
+#locales = ['ru_RU','es_ES','fr_FR','uk_UA','de_DE','fi_FI','sv_SE','be_BY'] #special digits locale
+locales = ['ru_RU','uk_UA','be_BY']
 formats = ['short','medium','long','full','d MMM YYY', 
            'd MMMM YYY',
            'dd MMM YYY',
