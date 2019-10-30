@@ -24,11 +24,17 @@ def softmax(x, axis=1):
     else:
         raise ValueError('Cannot apply softmax to a tensor that is 1D')
 
+
+
+
 def string2int(s, length,vocab):
     s = s.lower()
-    if(len(s)>length) :
+    s=s.replace(',','')
+    if len(s)>length:
         s=s[:length]
-    rep = list(map(lambda x: vocab.get(x, '<unk>'), s))
+    
+    rep = list(map(lambda x: vocab.get(x, vocab.get('<unk>')), s))
+
     if len(s)<length:
         rep += [vocab['<pad>']] * (length - len(s))
     return rep
@@ -72,7 +78,7 @@ class ModelWrapper:
     post_activation_LSTM = None
     output_layer = None
 
-    def one_step_attention(self,a,s_prev,Tx):
+    def one_step_attention(self,a,s_prev):
         s_prev = self.repeator(s_prev)
         concat = self.concatenator([a,s_prev])
         e = self.densor1(concat)
@@ -85,7 +91,7 @@ class ModelWrapper:
         #create repeator layer
         self.repeator = layers.RepeatVector(Tx)
         self.post_activation_LSTM=layers.LSTM(n_s,return_state=True)
-        self.output_layer = layers.Dense(machine_vocab_size,activation='softmax')
+        self.output_layer = layers.Dense(machine_vocab_size,activation=softmax)
 
         X = layers.Input(shape=(Tx,human_vocab_size))
         s0 = layers.Input(shape=(n_s,),name='s0')
@@ -98,11 +104,11 @@ class ModelWrapper:
         a = layers.Bidirectional(layers.LSTM(n_a,return_sequences=True))(X)
 
         for i in range(Ty):
-            context = self.one_step_attention(a,s,Tx)
+            context = self.one_step_attention(a,s)
             s, ss, c = self.post_activation_LSTM(context,initial_state=[s,c])
             output = self.output_layer(s)
             outputs.append(output)
         model = tf.keras.Model(inputs=[X,s0,c0],outputs=outputs)
-        return model;
+        return model
 
 

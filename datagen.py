@@ -1,5 +1,5 @@
 from datetime import *
-from random import randrange,seed
+import random
 from babel.dates import format_date
 from tqdm import tqdm
 import json
@@ -21,7 +21,7 @@ daylength = 100*365.25
 daydelta = timedelta(days=daylength)
 begindate = curdate - daydelta
 numsamples = 100000
-seed()
+
 locales = ['ru_RU','es_ES','fr_FR','uk_UA','de_DE','fi_FI','sv_SE','be_BY'] #special digits locale
 formats = ['short','medium','long','full','d MMM YYY', 
            'd MMMM YYY',
@@ -43,13 +43,12 @@ Ty=10
 Tx=0
 ## raw data generation
 for i in tqdm(range(numsamples),desc="Initial generation") :
-    localind = randrange(1,len(locales))
-    locale = locales[localind]
-    date1 = date.fromordinal(begindate.toordinal()+randrange(0,daylength))
-    fmt = formats[randrange(0,len(formats))]
-    datestr=format_date(date1,format=fmt,locale=locale)
+    locale = random.choice(locales)
+    date1 = date.fromordinal(begindate.toordinal()+random.randrange(0,daylength))
+    fmt = random.choice(formats)
+    datestr=format_date(date1,format=fmt,locale=locale).lower().replace(",","")
     if len(datestr)>Tx: Tx=len(datestr)
-    datemach=date1.isoformat()
+    datemach=date1.isoformat().lower()
     human_vocab.update(tuple(datestr))
     machine_vocab.update(tuple(datemach))
     if fmt == 'short' : localind = 0 # special only digits locale
