@@ -1,4 +1,4 @@
-from datamodel import *
+from datemodel import *
 import sys
 import json
 import numpy as np

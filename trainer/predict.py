@@ -1,4 +1,4 @@
-from datamodel import *
+from datemodel import *
 from tensorflow.keras import Model
 from tensorflow.keras.models import load_model
 from tensorflow.keras.utils import to_categorical
@@ -10,10 +10,11 @@ from random import randrange
 
 
 datafile = sys.argv[1]
-weigthsfile = None
-if(len(sys.argv)>2): weigthsfile = sys.argv[2]
+configfile = None
+if(len(sys.argv)>2): configfile = sys.argv[2]
 f = open(datafile,'r')
 data = json.load(f)
+f.close()
 
 Tx = data['config']['Tx']
 Ty = data['config']['Ty']
@@ -22,8 +23,17 @@ machine_vocab = data['machine']
 inv_machine = {int(v):k for k,v in machine_vocab.items()}
 inv_human = {int(v):k for k,v in human_vocab.items()}
 
-print(human_vocab)
+n_a = 32
+n_s = 64
 
+data['config']['n_a']=32
+data['config']['n_s']=64
+
+
+if configfile != None: 
+    fc = open(configfile,"w")
+    json.dump({'config':data['config'],'human':data['human'],'machine':data['machine']},fc)
+    fc.close()
 
 X = []
 for i in range(20):
@@ -36,8 +46,7 @@ Xints,Xoh = encode_strings(X,Tx,human_vocab)
 s0 = np.zeros((20,64))
 c0 = np.zeros((20,64))
 
-n_a = 32
-n_s = 64
+
 
 
 mw = ModelWrapper()
