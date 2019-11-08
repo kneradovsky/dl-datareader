@@ -1,0 +1,17 @@
+{
+  "name": "dmbot",
+  "version": "1.0.9",
+  "description": "telegram bot for datemodel api",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "zip" : "zip -9ur dmbot.zip *.js package.json",
+    "pub": "yc serverless function version create --function-name=dmbot --runtime nodejs12 --entrypoint index.handler --memory 128m  --execution-timeout 5s --source-path ./dmbot.zip"
+  },
+  "author": "kneradovsky",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "telegraf": "^3.33.3"
+  }
+}
